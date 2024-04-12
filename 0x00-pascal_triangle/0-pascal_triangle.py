@@ -9,7 +9,7 @@ def pascal_triangle(n):
 
     Args:
         n (int): number of rows
-    
+
     Returns:
         pascal's triangle
     """
