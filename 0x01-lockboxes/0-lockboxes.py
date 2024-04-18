@@ -1,39 +1,39 @@
 #!/usr/bin/python3
-"""A module that determine if all the given boxes can be opened"""
-from typing import List, Set
+"""
+This module contains a method to determine if all the lockboxes can be opened.
+"""
 
 
-def getVisitedBoxes(boxes: List[List], keys: List, visited: Set) -> Set:
+def canUnlockAll(boxes):
     """
-    Gets the boxes opened
+    Determine if all the lockboxes can be opened.
 
     Args:
-        boxes (List[List]): List of lists to check
-        keys (List): A list of keys to open the boxes with
-        visited (Set): The boxes opened
+        boxes (list of list): A list of lists representing the lockboxes.
 
     Returns:
-        Set: The boxes opened
+        bool: True if all boxes can be opened, False otherwise.
     """
-    for key in keys:
-        if key not in visited and key < len(boxes):
-            visited.add(key)
-            visited = getVisitedBoxes(boxes, boxes[key], visited)
-    return visited
 
+    # Initialize a set to keep track of opened boxes
+    opened_boxes = set()
+    # Add the first box (box 0) to the opened set
+    opened_boxes.add(0)
 
-def canUnlockAll(boxes: List[List]) -> bool:
-    """
-    Determines if all boxes can be opened
+    # Initialize a set to keep track of keys
+    keys = set(boxes[0])
 
-    Args:
-        boxes (list[list]): List of lists to check
+    # Loop through the keys set until there are no new keys
+    while keys:
+        # Get a key from the keys set
+        key = keys.pop()
 
-    Returns:
-        bool: Whether all boxes can be opened
-    """
-    visitedBoxes: Set[int] = {0}
-    visitedBoxes = getVisitedBoxes(boxes, boxes[0], visitedBoxes)
-    if len(visitedBoxes) == len(boxes):
-        return True
-    return False
+        # If the key opens a new box and the box is not opened yet
+        if key < len(boxes) and key not in opened_boxes:
+            # Add the box to the opened set
+            opened_boxes.add(key)
+            # Add the keys from the newly opened box to the keys set
+            keys.update(boxes[key])
+
+    # If the number of opened boxes is equal to the total number of boxes
+    return len(opened_boxes) == len(boxes)
