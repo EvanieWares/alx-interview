@@ -39,5 +39,3 @@ def minOperations(n):
         if isPrimeNumber(i) and n % i == 0:
             return i + minOperations(int(n / i))
     return 0
-
-print(minOperations(1))
