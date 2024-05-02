@@ -4,46 +4,46 @@ Module 0-stats
 
 Implements a function that reads stdin line by line and computes metrics
 """
+import sys
 
 
-def print_metrics(size, status_codes, found_codes):
+def print_stats(stats: dict, file_size: int) -> None:
     """
-    Prints the computed metrics to stdout
+    Prints the stats to stdout
 
     Parameters:
-    - size (int): size of all metrics
-    - status_codes (list): list of all status codes
-    - found_codes (list): list of all status codes read
+    - file_size (int): size of all metrics
+    - stats (dict): The dictionary containing status codes
     """
-    print("File size: {:d}".format(size))
-    for code in status_codes:
-        if found_codes.count(code) != 0:
-            print("{} {}".format(code, found_codes.count(code)))
+    print("File size: {:d}".format(filesize))
+    for k, v in sorted(stats.items()):
+        if v:
+            print("{}: {}".format(k, v))
 
 
-def read_metrics():
-    """
-    Reads stdin line by line and computes metrics
-    """
-    import sys
+if __name__ == '__main__':
+
+    filesize, count = 0, 0
+    status_codes = ["200", "301", "400", "401", "403", "404", "405", "500"]
+    stats = {k: 0 for k in status_codes}
+
     try:
-        size = 0
-        num = 0
-        status_codes = ["200", "301", "400", "401", "403", "404", "405", "500"]
-        found_codes = []
         for line in sys.stdin:
-            num = num + 1
-            line = line.strip()
-            splitted = line.split()
-            found_codes.append(splitted[7])
-            size += int(splitted[8])
-            if num == 10:
-                num = 0
-                print_metrics(size, status_codes, found_codes)
-
+            count += 1
+            data = line.split()
+            try:
+                status_code = data[-2]
+                if status_code in stats:
+                    stats[status_code] += 1
+            except BaseException:
+                pass
+            try:
+                filesize += int(data[-1])
+            except BaseException:
+                pass
+            if count % 10 == 0:
+                print_stats(stats, filesize)
+        print_stats(stats, filesize)
     except KeyboardInterrupt:
-        print_metrics(size, status_codes, found_codes)
-
-
-if __name__ == "__main__":
-    read_metrics()
+        print_stats(stats, filesize)
+        raise
