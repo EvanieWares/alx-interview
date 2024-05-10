@@ -17,4 +17,19 @@ def validUTF8(data):
     Returns:
         bool: True if the data is a valid UTF-8 sequence, False otherwise.
     """
-    return all(byte >> 7 == 0 for byte in data)
+    byte_count = 0
+    for byte in data:
+        mask = 0x80
+        if not byte_count:
+            while byte & mask:
+                byte_count += 1
+                mask >>= 1
+            if byte_count == 0:
+                continue
+            if byte_count > 4 or (byte_count == 1 and byte >= 0xC0):
+                return False
+        else:
+            if byte >> 6 != 0b10:
+                return False
+        byte_count -= (byte >> 5 == 0b10) and 1
+    return byte_count == 0
