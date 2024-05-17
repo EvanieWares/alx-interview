@@ -15,7 +15,7 @@ def init_board(n):
     Returns:
         list: A 2D list representing the initialized chessboard.
     """
-    board = [[ ' ' for _ in range(n)] for _ in range(n)]
+    board = [[' ' for _ in range(n)] for _ in range(n)]
     return board
 
 
