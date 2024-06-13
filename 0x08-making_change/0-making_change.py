@@ -23,15 +23,12 @@ def makeChange(coins, total):
     if total <= 0:
         return 0
 
-    # Initialize the dp array with a large number (inf)
     dp = [float('inf')] * (total + 1)
-    dp[0] = 0  # Base case: 0 coins needed to make 0
+    dp[0] = 0
 
-    # Iterate over each coin and update the dp array
     for coin in coins:
         for i in range(coin, total + 1):
-            dp[i] = min(dp[i], dp[i - coin] + 1)
+            if dp[i - coin] != float('inf'):
+                dp[i] = min(dp[i], dp[i - coin] + 1)
 
-    # If dp[total] is still inf, return -1 as it means it's not
-    # possible to form the total
     return dp[total] if dp[total] != float('inf') else -1
